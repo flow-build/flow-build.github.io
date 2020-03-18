@@ -1,38 +1,40 @@
-<!--panels:start-->
-<!--div:title-panel-->
+# Get Start
 
-  (...) - Awesome title
-
-<!--div:left-panel-->
-
-  (...) - Awesome explanation
-
-<!--div:right-panel-->
+to start your workflow project you need to install at minimum workflow-core dependencies
 
 
-  (...) - Awesome example
 
-<!--panels:end-->
+<!-- panels:start -->
+<!-- div:title-panel -->
 
+titulo do tema
+
+<!-- div:left-panel -->
+
+explicacao basica do tema
+
+<!-- div:right-panel -->
 
 <!-- tabs:start -->
 
 #### **windows**
 
-
+```
 Hello!
-
+```
 
 #### **mac os**
 
-``` shell
+``` sh
     echo 'hello world'
 ```
 
 #### **linux**
 
-``` shell
+``` sh
     echo 'hello world'
 ```
 
 <!-- tabs:end -->
+
+<!-- panels:end -->
