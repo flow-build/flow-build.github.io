@@ -1,42 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>workflow fdte-dsd</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="Description">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/buble.css">
 
-</head>
-<body>
-  <div id="app">Please Await...123</div>
-  <script>
-    window.$docsify = {
-      name: 'workflow fdte-dsd',
-      
-      loadNavbar: true,
-      loadSidebar: true,
-      mergeNavbar: true,
-      
-      search: 'auto',
-      auto2top: true,
-      autoHeader: true,
+  <head>
+    <meta charset="UTF-8">
+    <title>FlowBuild</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="Description">
+    <meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 
-      basePath: 'https://fdte-dsd.github.io/workflow',
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-changelog-plugin@latest/dist/style.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+    <style>
+      :root {
+        --docsifytabs-border-color: #ededed;
+        --docsifytabs-tab-highlight-color: #0074d9;
 
-      notFoundPage: true,
-      relativePath: true,
-      nameLink: {
-        '/pt-br/': '/workflow/#/pt-br/',
-        '/': '/workflow/',
-      },
-    }
-  </script>
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-  <!-- plugins -->
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
-</body>
+        --docsify-example-panels-left-panel-width: 55%;
+        --docsify-example-panels-right-panel-width: 45%;
+
+        /* Tabs */
+        --docsifytabs-tab-background: var(--mono-tint3);
+        --docsifytabs-tab-color: var(--mono-tint1);
+
+
+      }
+    </style>
+  </head>
+
+
+  <body>
+    <script src="//unpkg.com/docsify-edit-on-github/index.js"></script>
+    <div id="app">
+    </div>
+    <script>
+      window.$docsify = {
+
+        //GENERAL
+        name: 'FlowBuild',
+        repo: 'https://github.com/flow-build/flow-build',
+
+        //NAVIGATION
+        basePath: '/',
+        notFoundPage: true,
+        relativePath: true,
+        nameLink: {
+          '/pt-br/': '/#/pt-br/',
+          '/': '/',
+        },
+        loadSidebar: true,
+        mergeNavbar: true,
+
+        auto2top: true,
+        maxLevel: 3,
+        subMaxLevel: 3,
+        alias: {
+          '.*?/changelog': 'https://raw.githubusercontent.com/flow-build/flow-build/master/CHANGELOG.md',
+        },
+
+        //PLUGINS
+        search: {
+          depth: 3,
+          noData: 'No results!',
+          placeholder: 'Search...'
+        },
+        tabs: {
+          persist: true,      // default
+          sync: true,      // default
+          theme: 'classic', // default
+          tabComments: true,      // default
+          tabHeadings: true       // default
+        },
+        themeable: {
+          readyTransition: true, // default
+          responsiveTables: true  // default
+        },
+        plugins: [
+          EditOnGithubPlugin.create('https://github.com/flow-build/flow-build.github.io/blob/master/')
+        ]
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
+    <!-- plugins -->
+    <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+    <script src="//unpkg.com/docsify-glossary/dist/docsify-glossary.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/docsify-example-panels@1"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+  </body>
+
 </html>
