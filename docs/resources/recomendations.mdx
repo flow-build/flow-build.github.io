@@ -1,0 +1,103 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Identificando e Nomeando
+
+Em uma blueprint, os nós e as lanes tem um atributo name e um id. 
+
+## Nodes
+
+O atributo name não é utilizado pelo motor para execução do processo. Sua função é trazer entendimento para os usuários, sejam eles analistas de negócio, designers ou desenvolvedores. 
+
+Alguns eventos de execução incluem o nome do nó mas mensagem, o que é registrado nos logs, podendo ajudar no rastreamento de problemas.
+
+O id, por sua vez, tem uso direto pelo motor de execução para identificar a sequência de tarefas. Trata-se de um identificador único para que o Flowbuild identifique a próxima tarefa a ser executada, por isso, o campo id deve ser único na blueprint spec (condição que caso não seja cumprida impede a publicação da blueprint).
+
+Isso não impede, contudo, que este campo não possa também ser utilizado para facilitar o entendimento de negócio por um usuário. O id do nó é um dado salvo no estado do processo, enquanto que o nome do nó está disponível na blueprint. Se o usuário é capaz de identificar o objetivo do nó através do seu id, isso facilita o rastreamento de problemas.
+
+O campo id, do ponto de vista de schema, é um campo do tipo string. Economizar caracteres no campo id traz pouquissimos ganhos para a execução, porém pode dificultar um debugging.
+
+## IDs
+
+A forma de identificar e nomear nós é livre, porém apresentamos abaixo algumas práticas comuns, com seus pró e contras.
+
+<Tabs
+  className="unique-tabs"
+  defaultValue="http"
+  values={[
+    {label: 'Sequência Numérica', value: 'numbers'},
+    {label: 'Caminhos', value: 'ids'},
+    {label: 'Tipo de Nó', value: 'type'},
+    {label: 'Lane', value: 'lane'},
+    {label: 'Bloco Funcional', value: 'block'},
+  ]
+}>
+<TabItem value="numbers">
+
+Descrição: Utiliza uma sequencia númerica - números como strings
+
+Prós: Fácil entendimento do sequenciamento de tarefas
+
+Cons: Não funciona em fluxos com flowNodes, Pode gerar confusão com o step_number
+</TabItem>
+<TabItem value="ids">
+Exemplo: 1.1, 1.2, 1.3
+</TabItem>
+<TabItem value="type">
+Exemplo: Flow1, System1, System2, User1
+
+</TabItem>
+<TabItem value="lane">
+Exemplo: L1S1.1, L1S1.2
+</TabItem>
+<TabItem value="block">
+Exemplo: PRE-CONDITIONS.1, PRE-CONDITIONS.2, WHOIS.1, WHOIS.2
+Descrição: Busca dividir o fluxo em blocos menores, de acordo com a funcionalidade
+Prós: Tenta trazer contexto de negócio aos nós, para facilitar o rastreamento
+Contras: Não há identificação do caminho feliz
+</TabItem>
+</Tabs>
+
+## Names
+
+O campo names é uma campo mais livre, não precisa se um valor único.
+
+A recomendação é deixar clara qual o objetivo da tarefa, ou seja, algumas recomendações básicas:
++ Use nomes que tragam sentido
++ Evite códigos e abreviações
++ Não exagere nas informações
++ Evite nomes **muito** (longos ou curtos)
++ Seja consistente
+
+Uma regra simples e comum é o padrão **AÇÃO** + **ATRIBUTO**.
++ Consultar Usuários
++ Salvar Pedido
++ Preencher Pedido
++ Confirmar Chegada
+
+## Eventos (Start e Finish)
+
+StartNodes e FinishNodes são os dois tipos de eventos existentes no FlowBuild para iniciar e finalizar um processo. 
+
+A recomendação para os nomes desses nodes é que reflitam o objetivo do processo. Assim estes eventos podem ser nomeados usando o modelo ENTIDADE +
+STATUS, onde:
++ StartNodes é nomedo em função das condições de ativação do processo.
++ FinishNodes é nomeado em função da condição de saída do processo.
+
+o Caso o processo tenha estados finais alternativos, crie um finishNode para cada estado.
+
+o Caso o processo tenha estados finais alternativos, crie um finishNode para cada estado.
+
+Exemplos:
++ Usuário Cadastrado
++ Cadastro Interrompido
++ Contrato Criado
++ Senha atualizada
+
+
+## Lanes
+
+Nomeie lanes usando a **condição** que elas definem. Caso a lane utilize algum parâmetro de contexto do processo, utilize o nome do atributo utilizado como condição. Mesmo que um processo possa ser executado por qualquer ator, é importante que a raia seja identificada como esta condição, um ator anônimo.
+
+Em um projeto em que mais de um processo se relacionam é aconselhável que as raias de um mesmo ator utilizem o mesmo nome e a mesma definição. Assim facilitamos o entendimento e diminuímos a possibilidade de inconsistências no todo.
+

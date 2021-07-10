@@ -1,0 +1,448 @@
+---
+id: workflows
+title: Workflows
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## CREATE & UPDATE 
+
+### Criar ou Atualizar um workflow
+
+O Flowbuild disponibiliza uma única rota que deve ser utilizada para criar ou atualizar um workflow.
+
+Na prática não o Flowbuild não realiza *atualização* de workflows, uma atualização é tratada como a publicação de uma nova versão do workflow existente. A cada submissão é gerado um novo workflow_id e elevada a versão do workflow existente (mesmo que não haja mudança em relação a versão corrente).
+
+#### Request
+
+| Verbo | Path |
+| --- | --- |
+| POST | /workflows |
+
+##### Model
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'Exemplo', value: 'example'},
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "blueprint_spec": { "$ref": "#/models/blueprint_spec" }
+    }
+}
+```
+
+Modelo [blueprint_spec](../models/blueprint_spec)
+</TabItem>
+<TabItem value="example">
+
+``` json
+{
+    "name": "meuPrimeiroWorkflow",
+    "description": "Só mais um exemplo",
+    "blueprint_spec": { 
+        "requirements": [ "core" ]
+        "prepare": [],
+        "environment": {},
+        "parameters": { 
+            "max_step_number": 20 
+        },
+        "lanes": [
+            {
+                "id": "anyone",
+                "name": "just a lane",
+                "rule": ["fn", ["&", "args"], true]
+            }
+        ],
+        "nodes": [
+            {
+                "id": "1",
+                "type": "Start",
+                "name": "Começar meu primero workflow",
+                "lane_id": "anyone",
+                "next": "2",
+                "parameters": {
+                    "input_schema": {}
+                }
+            },
+            {
+                "id": "2",
+                "type": "SystemTask",
+                "category": "SetToBag",
+                "name": "Guardar algum valor",
+                "lane_id": "anyone",
+                "next": "3",
+                "parameters": {
+                    "input": {
+                        "example": "algum valor",
+                    }
+                }
+            },
+            {
+                "id": "3",
+                "type": "Finish",
+                "name": "Terminou",
+                "next": null,
+                "lane_id": "anyone"
+            }
+        ]
+    }
+}
+```
+</TabItem>
+</Tabs>
+
+##### Responses
+
+<Tabs
+  defaultValue="200"
+  values={[
+    {label: '200', value: '200'},
+    {label: '400', value: '400'},
+    {label: '401', value: '401'},
+  ]
+}>
+<TabItem value="200">
+
+A requisição foi bem sucedida e o workflow foi criado
+
+``` json title="Schema"
+{
+    "type": "object",
+    "properties": {
+        "workflow_id": { "type": "string", "format": "uuid" },
+        "workflow_url": { "type": "string", "format": "uri" }
+    }
+}
+```
+
+``` json title="Exemplo"
+{
+    "workflow_id": "ebbb2500-ddbd-11eb-a6b3-d3619c91018b",
+    "workflow_url": "3.82.154.55:3000/workflows/ebbb2500-ddbd-11eb-a6b3-d3619c91018b"
+}
+```
+
+</TabItem>
+<TabItem value="400">
+
+Há alguma inconsistência na blueprint enviada.
+
+``` json title="Schema"
+{
+    "type": "object",
+    "properties": {
+        "message": { "type": "string" },
+        "error": { "type": "object" }
+    }
+}
+```
+
+``` json title="Exemplo"
+{
+    "message": "Failed at node 1: parameters_has_input_schema",
+    "error": {
+        "generatedMessage": false,
+        "code": "ERR_ASSERTION",
+        "actual": false,
+        "expected": true,
+        "operator": "=="
+    }
+}
+```
+</TabItem>
+<TabItem value="401">
+
+A requisição não foi autorizada, possíveis causas
+- Não foi enviado um token
+- O token enviado está expirado
+- A assinatura do token não foi reconhecida
+
+``` json title="Schema"
+{
+    "type": "string"
+}
+```
+
+``` json title="Exemplo"
+Unauthorized
+```
+</TabItem>
+</Tabs>
+
+## READ 
+
+### Listar workflows
+
+Lista os workflows acessíveis pelo usuário.
+
+A listagem filtra os workflows para exibir somente os workflows cujo startNode é acessível pelo usuário. Não existe uma rota geral para listagem indiscriminada de workflows.
+
+#### Request
+
+| Verbo | Path |
+| --- | --- |
+| GET | /workflows |
+
+#### Responses
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'Exemplo', value: 'example'},
+  ]
+}>
+<TabItem value="schema">
+
+``` json title="Schema"
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": { "type": "string", "format": "uuid" },
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "version": { "type": "integer" },
+            "created_at": { "type": "string", "format": "date-time" },
+        }
+    }   
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json title="Exemplo"
+[
+    {
+        "id": "d373bef0-1152-11ea-9576-9584815cab84",
+        "name": "test_workflow",
+        "description": "Workflow para rodar testes sobre a aplicação",
+        "version": 1,
+        "created_at": "2021-06-07T20:35:38.973Z"
+    },
+    {
+        "id": "2210847e-8b61-4af7-9df7-73fd2b0bb24d",
+        "name": "test_schemas",
+        "description": "Workflow para rodar testes de schemas (input, activity, result)",
+        "version": 1,
+        "created_at": "2021-06-07T20:35:38.973Z"
+    }
+]
+```
+
+</TabItem>
+</Tabs>
+
+
+### Consultar um workflow
+
+Existem 2 rotas irmãs para consulta de um workflow. Através do id do workflow ou através do nome do workflow.
+
+Ambas retornam um payload similar, sendo que a consulta pelo nome retorna a versão mais recente do workflow solicitado.
+#### Request
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| GET | /workflows/{workflow_id} | type: string, format: uuid |
+| GET | /workflows/name/{workflow_name} | type: string | 
+
+##### Responses
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: '200 - Schema', value: 'schema'},
+    {label: '200 - Exemplo', value: 'example'},
+    {label: '404', value: 'notfound'},
+  ]
+}>
+<TabItem value="schema">
+
+``` json title="Schema"
+{
+    "type": "object",
+    "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "version": { "type": "integer" },
+        "blueprint_spec": { "$ref": "#/models/blueprint_spec" }
+    }
+}
+```
+Modelo [blueprint_spec](../models/blueprint_spec)
+</TabItem>
+<TabItem value="example">
+
+``` json title="Exemplo"
+{
+    "id": "5392e820-ce0f-11eb-a6b3-d3619c91018b",
+    "created_at": "2021-06-15T19:24:38.690Z",
+    "name": "workshow",
+    "description": "demo",
+    "blueprint_spec": {
+        "lanes": [
+            {
+                "id": "usuario",
+                "name": "usuario",
+                "rule": ["fn",["actor_data","bag"],
+                        ["eval",["apply","or",["map",
+                        ["fn",["v"],["=","v",["`","usuario"]]],
+                        ["get","actor_data",["`","claims"]]]]
+                    ]
+                ]
+            }
+        ],
+        "nodes": [
+            {
+                "id": "1",
+                "name": "Iniciar workshop",
+                "next": "2",
+                "type": "Start",
+                "lane_id": "usuario",
+                "parameters": {
+                    "input_schema": {}
+                }
+            },
+            {
+                "id": "2",
+                "name": "consultar sabores",
+                "next": "99",
+                "type": "systemTask",
+                "lane_id": "usuario",
+                "category": "http",
+                "parameters": {
+                    "input": {},
+                    "request": {
+                        "url": "https://6078984be7f4f5001718490b.mockapi.io/api/v1/Flavours",
+                        "verb": "GET",
+                        "headers": {
+                            "ContentType": "application/json"
+                        }
+                    },
+                    "result_schema": {
+                        "type": "object",
+                        "required": [
+                            "qtd",
+                            "sabores"
+                        ],
+                        "properties": {
+                            "qtd": {
+                                "type": "integer",
+                                "maximum": 10,
+                                "minimum": 1
+                            },
+                            "sabores": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "comentarios": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            {
+                "id": "99",
+                "name": "termino workshop",
+                "next": null,
+                "type": "Finish",
+                "lane_id": "usuario",
+                "parameters": {
+                    "input": {
+                        "motivo": "término"
+                    }
+                }
+            }
+        ],
+        "prepare": [],
+        "environment": {},
+        "requirements": [
+            "core"
+        ]
+    },
+    "version": 7
+}
+```
+
+</TabItem>
+<TabItem value="notfound">
+
+``` json title="Schema"
+{
+    "type": "string",   
+}
+```
+
+``` json title="Exemplo"
+Not Found
+```
+</TabItem>
+</Tabs>
+
+## DELETE 
+
+### Remover um workflow
+
+Remove um workflow. Essa ação só será possível de ser executada caso nenhum processo tenha sido criado usando esse workflow_id.
+
+##### Request:
+
+| Verbo | Path | Format |
+| --- | --- | --- |
+| DELETE | /workflows/:workflow_id | type: string, format: uuid |
+
+##### Responses
+
+<Tabs
+  defaultValue="204"
+  values={[
+    {label: '204', value: '204'},
+    {label: '400', value: '400'},
+    {label: '401', value: '401'},
+  ]
+}>
+<TabItem value="204">
+
+A requisição foi bem sucedida e o workflow foi removido
+
+</TabItem>
+<TabItem value="400">
+
+Existem processos vinculados a esse workflow e, portanto, o mesmo não pode ser removido.
+</TabItem>
+<TabItem value="401">
+
+A requisição não foi autorizada, possíveis causas
+- Não foi enviado um token
+- O token enviado está expirado
+- A assinatura do token não foi reconhecida
+
+``` json title="Schema"
+{
+    "type": "string"
+}
+```
+
+``` json title="Exemplo"
+Unauthorized
+```
+</TabItem>
+</Tabs>

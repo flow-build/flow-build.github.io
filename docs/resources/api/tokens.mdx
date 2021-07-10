@@ -1,0 +1,69 @@
+---
+id: tokens
+title: Tokens
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Criar um token
+
+Cria um token para ser utilizados nas chamadas para o FlowBuild.
+
+Esta rota não deve ser utilizada em ambientes de produção, devendo ser substituída por uma forma de autenticação e autorização da sua aplicação.
+
+### Request
+
+| Verbo | Path |
+| --- | --- |
+| POST | /token |
+
+São 3 parâmetros opcionais que podem ser enviados para criação do token
+
+| Parâmetro | Localização | Descrição | Formato | Valor Padrão |
+| --- | --- | --- | --- | --- |
+| x-secret | header | Chave para assinatura do jwt to token | string | 1234 |
+| x-duration | header | Prazo de expiração do token (em ms) | integer | 1 hora |
+| claims | body | Lista de claims do token | arrayOf(string) | [] |
+
+### Models
+
+<Tabs
+  defaultValue="request"
+  values={[
+    {label: 'Request', value: 'request'},
+    {label: 'Response', value: 'response'},
+  ]
+}>
+<TabItem value="request">
+
+``` php
+curl --location --request POST '{{your host url}}/token' \
+--header 'x-secret: 1234' \
+--header 'x-duration: 60000' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "claims": ["oneClaim","twoClaims"]
+}'
+```
+</TabItem>
+<TabItem value="response">
+
+O código padrão de resposta é 200.
+
+``` json
+{
+    "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOlsib25lQ2xhaW0iLCJ0d29DbGFpbXMiXSwiYWN0b3JfaWQiOiJlOTI1ODYwMC1kZGJkLTExZWItYTZiMy1kMzYxOWM5MTAxOGIiLCJpYXQiOjE2MjU1MDkzMjksImV4cCI6MTYyNTU2OTMyOX0.zqAh_dA8HRW8_vjkrOsXVCfiv1IAfZ-pAE1LuXMUeQU",
+    "payload": {
+        "claims": [
+            "oneClaim",
+            "twoClaims"
+        ],
+        "actor_id": "e9258600-ddbd-11eb-a6b3-d3619c91018b",
+        "iat": 1625509329,
+        "exp": 1625569329
+    }
+}
+```
+</TabItem>
+</Tabs>

@@ -1,0 +1,424 @@
+---
+id: processes
+title: Processos
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Todas as rotas de processo fazem avaliação do token do usuário, retornando um código 401 caso:
++ o token não seja enviado
++ o token esteja expirado
++ a assinatura do token não foi validada
+
+## CREATE
+
+### Criar um processo
+
+Existem 2 rotas irmãs para criação de um processo, através do id do workflow ou através do nome do workflow.
+
+Em ambos os casos, o processo é criado, um *id* é criado, mas o processo não é inicializado. O processo permanece em status **UNSTARTED** até que o comando de executar processo seja enviado.
+
+:::tip 
+A avaliação do input schema do start node é feito somente na execução do processo, ou seja, o envio de um payload inconsistente com o input schema do start node não impede a criação do processo.
+:::
+
+#### Request
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /workflows/{workflow_id}/create | type: string, format: uuid |
+| POST | /workflows/name/{workflow_name}/create | type: string | 
+
+#### Responses
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema' },
+    {label: 'Exemplo', value: 'example'}
+  ]
+}>
+<TabItem value="schema">
+
+``` json title="Schema"
+{
+    "type": "object",
+    "properties": {
+        "process_id": { "type": "string", "format": "uuid" },
+        "process_url": { "type": "string", "format": "uri" }
+    }
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json title="Exemplo"
+{
+    "process_id": "79a16e40-ddd4-11eb-a6b3-d3619c91018b",
+    "process_url": "{{your host}}/processes/name/{{your workflow}}/start/79a16e40-ddd4-11eb-a6b3-d3619c91018b"
+}
+```
+
+</TabItem>
+</Tabs>
+
+
+### Executar um processo
+
+Um processo quando criado, permanece com status **UNSTARTED** até que receba o comando de executar. 
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /processes/{process_id}/run | type: string, format: uuid |
+
+Nesse momento é feita a validação do input_schema do startNode com o payload enviado na criação do processo.
+
+:::info 
+Se o payload do input schema estiver inválido, o processo entrará em estado de **ERROR**.
+:::
+
+Nesse momento o processo recebe um novo estado, com status **RUNNING**.
+
+#### Responses
+
+<Tabs
+  defaultValue="200"
+  values={[
+    {label: '200', value: '200' },
+    {label: '404', value: '404'}
+  ]
+}>
+<TabItem value="200">
+
+O FlowBuild sempre retornará um código de resposta 200 caso o processo enviado seja um processo válido. 
+
+Isso não representa que o processo está saudável e em execução, mas a confirmação da recepção da requisição. Para consultar o estado do procesos, consulte as rotas de leitura do processo.
+
+</TabItem>
+<TabItem value="404">
+
+O código 404 é retornado quando:
++ o process_id enviado não existe
++ o usuário não tem permissão para acessar a lane do processo enviado.
+
+</TabItem>
+</Tabs>
+
+### Iniciar um processo
+
+O FlowBuild disponibiliza uma rota que permite, em uma só chamada, fazer a criação e a inicialização do processo.
+
+A rota é equivalente às rotas de criar processo e executar processo.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /workflows/name/{workflow_name}/start | type: string |
+| POST | /workflows/{workflow_id}/start | type: string, format: uuid |
+
+:::note Nota
+O retorno da chamada é idêntico ao retorno da chamada de criação de processo e é vinculado a criação do processo e não a sua inicialização, ou seja, uma resposta **200** informa que o processo foi criado e **não** significa que o processo foi inicializado com sucesso. Para verificar o estado do processo, utilize as rotas de consulta de processos.
+:::
+
+## READ
+
+### Listar processos de um workflow
+
+Lista todos os processos de um determinado workflow_id, bem como o estado atual de cada um deles.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| GET | /workflows/{workflow_id}/processes | type: string, format: uuid |
+
+#### Responses
+
+Se for enviado um workflow_id inexistente, a rota retornará uma lista vazia.
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema' },
+    {label: 'Exemplo', value: 'example' }
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "format": "uuid" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "workflow_id": { "type": "string", "format": "uuid" },
+      "state": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "process_id": { "type": "string", "format": "uuid" },
+          "step_number": { "type": "integer" },
+          "node_id": { "type": "string" },
+          "next_node_id": { "type": "string" },
+          "bag": { "type": "object" },
+          "external_input": { "type": "object" },
+          "result": { "type": "object" },
+          "error": { "type": "string" },
+          "status": { "type": "string" },
+          "actor_data": { "type": "object" },
+          "engine_id": { "type": "string", "format": "uuid" },
+          "time_elapsed": { "type": "integer" },
+        },
+        "current_state_id": { "type": "string", "format": "uuid" },
+        "current_status": { "type": "string" },
+      }
+    }
+  }
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json
+[
+    {
+        "id": "505eaa10-ce0d-11eb-a6b3-d3619c91018b",
+        "created_at": "2021-06-15T19:10:14.321Z",
+        "workflow_id": "d440d480-ce0c-11eb-a6b3-d3619c91018b",
+        "state": {
+            "id": "b64ee5a0-ce0e-11eb-a6b3-d3619c91018b",
+            "created_at": "2021-06-15T19:20:14.842Z",
+            "process_id": "505eaa10-ce0d-11eb-a6b3-d3619c91018b",
+            "step_number": 6,
+            "node_id": "3",
+            "next_node_id": "3",
+            "bag": {},
+            "external_input": null,
+            "result": null,
+            "error": "TypeError: Cannot read property 'data' of undefined",
+            "status": "error",
+            "actor_data": null,
+            "engine_id": "ec2ea650-c7cf-11eb-a6b3-d3619c91018b",
+            "time_elapsed": "1"
+        },
+        "current_state_id": "b64ee5a0-ce0e-11eb-a6b3-d3619c91018b",
+        "current_status": "error"
+    }
+]
+```
+</TabItem>
+</Tabs>
+
+
+### Consultar o estado atual de um processo
+
+Retorna o estado atual do processo.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| GET | /processes/{process_id} | type: string, format: uuid |
+
+#### Responses
+
+Se for enviado um process_id inexistente, a rota retornará uma resposta 404.
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema' },
+    {label: 'Exemplo', value: 'example' }
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "workflow_id": { "type": "string", "format": "uuid" },
+    "state": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "process_id": { "type": "string", "format": "uuid" },
+        "step_number": { "type": "integer" },
+        "node_id": { "type": "string" },
+        "next_node_id": { "type": "string" },
+        "bag": { "type": "object" },
+        "external_input": { "type": "object" },
+        "result": { "type": "object" },
+        "error": { "type": "string" },
+        "status": { "type": "string" },
+        "actor_data": { "type": "object" },
+        "engine_id": { "type": "string", "format": "uuid" },
+        "time_elapsed": { "type": "integer" },
+      },
+      "current_state_id": { "type": "string", "format": "uuid" },
+      "current_status": { "type": "string" },
+    }
+  }
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json
+{
+    "id": "f3a61c20-d813-11eb-b0f4-2f8267257aee",
+    "created_at": "2021-06-28T13:22:56.866Z",
+    "workflow_id": "f0eeeb60-d813-11eb-b0f4-2f8267257aee",
+    "state": {
+        "id": "fb7acf40-d813-11eb-b0f4-2f8267257aee",
+        "created_at": "2021-06-28T13:23:10.004Z",
+        "process_id": "f3a61c20-d813-11eb-b0f4-2f8267257aee",
+        "step_number": 5,
+        "node_id": "1",
+        "next_node_id": "1",
+        "bag": {},
+        "external_input": null,
+        "result": {
+        },
+        "error": null,
+        "status": "waiting",
+        "actor_data": {
+            "trace": {},
+            "claims": [
+                "authenticated",
+                "may_manage_invites",
+                "may_manage_users",
+                "may_manage_collections",
+                "may_manage_forms",
+                "may_manage_workflows",
+                "may_manage_configurations",
+                "publisher"
+            ],
+            "actor_id": "c060556f-9c14-42fe-a7cc-5016c31b63a6",
+            "event_id": "03a0be99-c728-4d06-a394-b144c842a975",
+            "client_ip": "::ffff:10.0.2.107",
+            "userAgent": {
+                "os": "unknown",
+                "browser": "PostmanRuntime",
+                "isMobile": false,
+                "platform": "unknown"
+            },
+            "account_id": "fe5850c0-8157-11ea-90fa-d7318abac255"
+        },
+        "engine_id": "0df53c10-cabc-11eb-b0f4-2f8267257aee",
+        "time_elapsed": null
+    },
+    "current_state_id": "fb7acf40-d813-11eb-b0f4-2f8267257aee",
+    "current_status": "waiting"
+}
+```
+</TabItem>
+</Tabs>
+
+### Consultar histórico de estados do processo
+
+Esta rota retorna o histórico de todos os estados do processo até o estado atual.
+
+O retorno dessa rota pode ser relativamente comprido, dependendo da quantidade de passos do processos e do tamanho da bag do processo. Não é recomendado utilizá-la caso o objetivo seja verificar o estado atual do processo.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| GET | /processes/{process_id}/history | type: string, format: uuid |
+
+##### Responses
+
+Retorna uma lista de estados do processo, ordenados do mais recente para o mais antigo.
+
+``` json title='Schema da Resposta'
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "format": "uuid" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "process_id": { "type": "string", "format": "uuid" },
+      "step_number": { "type": "integer" },
+      "node_id": { "type": "string" },
+      "next_node_id": { "type": "string" },
+      "bag": { "type": "object" },
+      "external_input": { "type": "object" },
+      "result": { "type": "object" },
+      "error": { "type": "string" },
+      "status": { 
+        "type": "string", 
+        "enum": ["unstarted", "running", "waiting", "delegated", "interrupted", "finished"]
+      },
+      "actor_data": { "type": "object" },
+      "engine_id": { "type": "string", "format": "uuid" },
+      "time_elapsed": { "type": "integer" },
+      "node_name": { "type": "string" }
+    }
+  }
+}
+```
+
+## UPDATE
+
+:::caution NOTA
+Essas rotas de atualização de processos só devem ser utilizadas em condições administrativas e desenvolvimento, o uso dessas rotas em condições de produção não são recomendadas.
+:::
+
+### Abortar processo
+
+A rota adiciona um estado **interrupted** no processo informado.
+
+Se houver activity_managers em status **started**, estes serão atualizados para status **interrupted**.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /cockpit/processes/{process_id}/abort | type: string, format: uuid |
+
+##### Responses
+
+| Código | Descrição | Body (Schema) |
+| ---- | --- | --- |
+| 200 | Proceso abortado | type: string |
+| 404 | Processo não localizado | type: string |
+
+### Definir estado do processo
+
+Essa rota cria um estado ao processo.
+
+Os dados necessários para criação do processo são:
++ next_node_id
++ result
++ bag
+
+A rota irá sobreescrever completamente a bag do processo pela bag informada no payload da request, sendo recomendada especial atenção aos dados informados.
+
+O processo permanecerá *pendente* até que o comando de *Retomar Processo* seja enviado.
+
+:::tip
+O comando de Executar Processo não funciona caso o processo esteja no estado *pendente*.
+:::
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /cockpit/processes/{process_id}/state | type: string, format: uuid |
+
+##### Responses
+
+Uma resposta é gerada confirmando a recepção do chamada, recomenda-se a verificação do estado atual do processo usando as rotas de consulta antes de prosseguir com o comando de *Retomar Processo*
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Process state set |
+| 404 | Process not found |
+
+### Retomar um processo
+
+Trata-se de uma rota equivalente a rota de *Executar Processo*, porém para uso exclusivo em processos cujo estado atual seja de *pendente*.
+
+Ao receber esse comando o estado do processo é atualizado para *running* para que o ciclo de execução seja retomado.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /cockpit/processes/{process_id}/state/run | type: string, format: uuid |

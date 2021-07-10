@@ -1,3 +1,0 @@
-# Entrada
-
-> um projeto incrivel.

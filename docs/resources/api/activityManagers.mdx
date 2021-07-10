@@ -1,0 +1,436 @@
+---
+id: activityManagers
+title: Activity Managers (Tarefas)
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+Activity Managers não são criados via interfaces, mas sim como resultado de execução do processo, por este motivo, não existem rotas para criação de Activity Managers.
+
+## READ
+
+### Listar Atividades Disponíveis
+
+Esta rota lista, para um determinado actor, todas as atividades disponíveis (status = **started**) de processos ativos.
+
+| Verbo | Path |
+| --- | --- |
+| GET | /processes/available |
+
+#### Responses
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema' },
+    {label: 'Exemplo', value: 'example' }
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": { "type": "string", "format": "uuid" },
+            "created_at": { "type": "string", "format": "date-time" },
+            "process_id": { "type": "string", "format": "uuid" },
+            "workflow_id": { "type": "string", "format": "uuid" },
+            "workflow_name": { "type": "string", "format": "uuid" },
+            "node_id": { "type": "string", "format": "uuid" },
+            "node_name": { "type": "string", "format": "uuid" },
+            "props": { "type": "object" }
+        }
+    }
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json
+[
+    {
+        "id": "56436380-df65-11eb-9568-0334791767bc",
+        "created_at": "2021-07-07T20:53:09.688Z",
+        "process_id": "4633e870-df65-11eb-9568-0334791767bc",
+        "process_status": "waiting",
+        "workflow_id": "0f133870-b8a3-11eb-9412-59e35195befe",
+        "workflow_name": "inviteUser",
+        "node_id": "1-13",
+        "node_name": "Complementar dados do Convite",
+        "props": {
+            "action": "OPEN_INVITE",
+            "result": {
+                "tags": [
+                    "tag1", "tag2"
+                ],
+                "email": "xodac86861@herrain.com",
+                "access_levels": [
+                    {
+                        "id": "af04e850-194e-11eb-ba42-01e2029c0a36",
+                        "name": "owner"
+                    },
+                    {
+                        "id": "b0e7e880-4ea9-11eb-b38b-49ef0ff3ee34",
+                        "name": "manager"
+                    },
+                    {
+                        "id": "316a1050-ade6-11eb-a27f-c90a21d33d29",
+                        "name": "user"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "23724290-de76-11eb-9568-0334791767bc",
+        "created_at": "2021-07-06T16:20:54.713Z",
+        "process_id": "fb675d40-de74-11eb-9568-0334791767bc",
+        "process_status": "waiting",
+        "workflow_id": "b77b0660-ce0a-11eb-b0f4-2f8267257aee",
+        "workflow_name": "aceitarProposta",
+        "node_id": "1-1",
+        "node_name": "Avisar Representante do inicio do processo de aceite",
+        "props": {
+            "action": "SHOW_ALERT",
+            "result": {
+                "icon": "success",
+                "text": "A proposta foi enviada",
+                "title": "Aceite da proposta!"
+            }
+        }
+    }
+]
+```
+</TabItem>
+</Tabs>
+
+
+### Listar Atividades Concluídas
+
+Rota equivalente a rota de atividades disponíveis, neste caso retornando todas as atividades completadas (status = **completed**).
+
+:::note Nota
+A rota retorna todas as atividades completadas cujo acesso é permitido para o usuário em questão, isso não significa, necessariamente, que a atividade foi executada pelo usuário.
+:::
+
+
+| Verbo | Path |
+| --- | --- |
+| GET | /processes/done |
+
+#### Responses
+
+A estrutura da resposta é idêntica a resposta da Listagem de Atividades Disponíveis.
+
+### Consultar o Activity Manager de um Processo
+
+É possível realizar a consulta utilizando o process_id, nesse caso a rota retornará a atividade disponível (status = **started**) para o processo informado.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| GET | /processes/{process_id}/activity  | type: string, format: uuid |
+
+#### Responses
+
+:::tip
+Em situações específicas, em processos com activity managers do tipo **notify**, poderá ocorrer uma situação em que um único processo tenha mais do que uma atividade disponível, nesse caso a rota retornará uma lista de atividades ao invés de uma única atividade.
+:::
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema' },
+    {label: 'Exemplo', value: 'example' }
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "process_id": { "type": "string", "format": "uuid" },
+        "workflow_id": { "type": "string", "format": "uuid" },
+        "workflow_name": { "type": "string", "format": "uuid" },
+        "node_id": { "type": "string", "format": "uuid" },
+        "node_name": { "type": "string", "format": "uuid" },
+        "props": { "type": "object" }
+    }
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json
+{
+    "id": "23724290-de76-11eb-9568-0334791767bc",
+    "created_at": "2021-07-06T16:20:54.713Z",
+    "process_id": "fb675d40-de74-11eb-9568-0334791767bc",
+    "process_status": "waiting",
+    "workflow_id": "b77b0660-ce0a-11eb-b0f4-2f8267257aee",
+    "workflow_name": "aceitarProposta",
+    "node_id": "1-1",
+    "node_name": "Avisar Representante do inicio do processo de aceite",
+    "props": {
+        "action": "SHOW_ALERT",
+        "result": {
+            "icon": "success",
+            "text": "A proposta foi enviada",
+            "title": "Aceite da proposta!"
+        }
+    }
+}|
+```
+</TabItem>
+</Tabs>
+
+Essa rota, em algumas situações, poderá gerar códigos de diferentes de 200, nos seguintes casos
+
+| Código | Descrição |
+| --- | --- |
+| 204 | O processo existe, porém não há nenhuma atividade disponível. Isso pode representar que o processo ainda está em execução ou que o usuário não tem permissão de acesso a atividade. |
+| 404 | Significa que o processo não existe *ou* este não está mais ativo |
+
+### Consultar um Activity Manager
+
+Neste caso, a consulta é realizada utilizando o activity_manager_id, sendo que neste caso o retorno ocorrerá independente do status do Activity Manager.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| GET | /processes/activityManager/{activity_manager_id} | type: string, format: uuid |
+
+#### Responses
+
+A resposta dessa rota adiciona uma lista de atividades salvas no activity manager.
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema' },
+    {label: 'Exemplo', value: 'example' }
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "activity_status": { "type": "string" },
+        "process_id": { "type": "string", "format": "uuid" },
+        "error": { "type": "string" },
+        "workflow_name": { "type": "string" },
+        "props": { "type": "object" },
+        "type": { "type": "string" },
+        "activities": { 
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "string", "format": "uuid" },
+                    "created_at": { "type": "string", "format": "date-time" },
+                    "actor_id": { "type": "string", "format": "uuid" },
+                    "data": { "type": "object" }
+                }
+            }
+        }
+    }
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json
+{
+    "id": "32e1b580-e015-11eb-9568-0334791767bc",
+    "created_at": "2021-07-08T17:52:01.752Z",
+    "activity_status": "started",
+    "process_id": "323e97b0-e015-11eb-9568-0334791767bc",
+    "error": null,
+    "workflow_name": "createUserByInvite",
+    "props": {
+        "action": "GET_INVITE_DATA",
+        "result": {}
+    },
+    "type": "commit",
+    "activities": [
+        {
+            "id": "5c0584e0-e016-11eb-9568-0334791767bc",
+            "created_at": "2021-07-08T18:00:20.270Z",
+            "actor_id": "09ea5390-b7ca-11ea-9e23-9bc0962ec17c",
+            "data": {
+                "email": "a@acme.com",
+                "token": "2b2c60a5-3036-4b28-86d9-0fc0e256a6c7"
+            }
+        }
+    ]
+}
+```
+</TabItem>
+</Tabs>
+
+## UPDATE
+
+Uma vez em ciente da atividade a ser realizada, existem rotas que permitem salvar atividades e enviar atividades para o processo.
+
+As rotas de salvar e enviar atividade podem ser acessadas utilizando tanto o process_id quanto o activity_manager_id. Todavia, tendo em vista que um processo pode ter mais de uma atividade disponível (vide comentário sobre consulta de atividade), recomenda-se a utilização das rotas através do activity_manager_id, que garantem a precisão quanto a atividade que está sendo enviada.
+
+### Salvar uma Atividade
+
+Nesta rota, um *rascunho* da atividade é salvo. O conteúdo do payload é varia em função da action do front e é definido em conjunto entre o canal e o worklfow.
+
+O processo não é afetado por essa ação.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /processes/{process_id}/commit | type: string, format: uuid |
+| POST | /activity_manager/{activity_manager_id}/commit | type: string, format: uuid |
+
+#### Responses
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema' },
+    {label: 'Exemplo', value: 'example' }
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "_id": { "type": "string", "format": "uuid" },
+        "_created_at": { "type": "string", "format": "date-time" },
+        "_process_state_id": { "type": "string", "format": "uuid" },
+        "_props": { "type": "object" },
+        "_parameters": { "type": "object" },
+        "_status": { "type": "string" },
+        "_type": { "type": "string" },
+        "_activities": { 
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "_id": { "type": "string", "format": "uuid" },
+                    "_created_at": { "type": "string", "format": "date-time" },
+                    "_process_state_id": { "type": "string", "format": "uuid" },
+                    "_actor_id": { "type": "string", "format": "uuid" },
+                    "_data": { "type": "object" }
+                }
+            }
+        }
+    }
+}
+```
+</TabItem>
+<TabItem value="example">
+
+``` json
+{
+    "_id": "32e1b580-e015-11eb-9568-0334791767bc",
+    "_created_at": "2021-07-08T17:52:01.752Z",
+    "_process_state_id": "32ff0180-e015-11eb-9568-0334791767bc",
+    "_props": {
+        "action": "GET_INVITE_DATA",
+        "result": {}
+    },
+    "_parameters": {
+        "activity_schema": {
+            "type": "object",
+            "required": [
+                "email",
+                "token"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "token": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "additionalProperties": false
+        },
+        "next_step_number": 4
+    },
+    "_status": "started",
+    "_type": "commit",
+    "_activities": [
+        {
+            "_id": "5c0584e0-e016-11eb-9568-0334791767bc",
+            "_created_at": "2021-07-08T18:00:20.270Z",
+            "_process_state_id": "32e1b580-e015-11eb-9568-0334791767bc",
+            "_actor_data": {
+                "event_id": "a068f506-2a60-435a-83af-454de4265067",
+                "client_ip": "::ffff:10.0.2.107",
+                "userAgent": {
+                    "os": "unknown",
+                    "browser": "PostmanRuntime",
+                    "platform": "unknown",
+                    "isMobile": false
+                },
+                "trace": {},
+                "account_id": "d47305a0-1ed4-11eb-ba42-01e2029c0a36",
+                "actor_id": "09ea5390-b7ca-11ea-9e23-9bc0962ec17c",
+                "claims": [
+                    "anonymous"
+                ]
+            },
+            "_data": {
+                "email": "a@acme.com",
+                "token": "2b2c60a5-3036-4b28-86d9-0fc0e256a6c7"
+            },
+            "_status": "started"
+        }
+    ]
+}
+```
+</TabItem>
+</Tabs>
+
+### Enviar uma Atividade
+
+Esta rota notifica o Activity Manager para enviar as atividades salvas para o processo.
+
+Todas as atividades salvas no Activity Manager são enviadas para o processo.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /processes/{process_id}/push | type: string, format: uuid |
+| POST | /activity_manager/{activity_manager_id}/push | type: string, format: uuid |
+
+#### Responses
+
+A rota gera uma resposta 202 confirmando o recebimento da atividade.
+
+### Submeter uma Atividade
+
+Esta rota compõe o salvamento da atividade e o envio em um único comando.
+
+Ao contrário da rota de commit, o retorno dessa tarefa é simplesmente a confirmação da submissão da tarefa.
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| POST | /activity_manager/{activity_manager_id}/submit | type: string, format: uuid |
+
+#### Responses
+
+| Código | Descrição |
+| ---- | ----------- |
+| 202 | Submissão da atividade confirmada |
+| 422 | O activity manager não está mais disponível para submissão |
+
+

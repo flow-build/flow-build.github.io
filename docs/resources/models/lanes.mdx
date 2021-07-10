@@ -1,0 +1,64 @@
+---
+id: lanes
+title: Lanes
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+  defaultValue="schema"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'LISP Example', value: 'lisp'},
+    {label: 'JS Example', value: 'js'},
+  ]
+}>
+<TabItem value="schema">
+
+``` json
+{
+    "type": "object",
+    "properties": { 
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "rule": { 
+            "oneOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "$js": { "type": "string" }
+                    }
+                },
+                {
+                    "type": "array"
+                }
+            ]
+        }
+    }
+}
+```
+</TabItem>
+<TabItem value="lisp">
+
+```json
+{
+    "id": "true",
+    "name": "Opened to anyone, LISP style",
+    "rule": ["fn", ["&", "args"], true]
+}
+```
+</TabItem>
+<TabItem value="js">
+
+```json
+{
+    "id": "true",
+    "name": "Opened to anyone, js style",
+    "rule": { 
+        "$js": "() => { return true }"
+    }
+}
+```
+</TabItem>
+</Tabs>

@@ -1,0 +1,64 @@
+---
+id: packages
+title: Packages
+---
+
+Todas as rotas de processo fazem avaliação do token do usuário, retornando um código 401 caso:
++ o token não seja enviado
++ o token esteja expirado
++ a assinatura do token não foi validada
+
+## CREATE 
+
+### Adicionar um pacote
+
+#### Request
+
+| Verbo | Path |
+| --- | --- |
+| POST | /packages |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Package saved |
+| 400 | Error saving package |
+| 401 |  |
+
+## READ
+
+### Consultar um pacote
+
+#### Request
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| GET | /packages/:id | type: string, format: uuid |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Package found |
+| 401 |  |
+| 404 | Package not found |
+
+## DELETE
+
+### Remover um pacote
+
+
+#### Request
+
+| Verbo | Path | Formato |
+| --- | --- | --- |
+| DELETE | /packages/:id | type: string, format: uuid |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Package deleted |
+| 401 |  |
+| 404 | Package not found |
