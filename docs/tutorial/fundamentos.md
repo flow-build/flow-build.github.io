@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # FUNDAMENTOS
 
 Documents are **groups of pages** connected through:

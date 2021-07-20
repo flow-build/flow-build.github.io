@@ -1,7 +1,3 @@
----
-sidebar_position: 5
----
-
 # EXECUCAO DO PROCESSO
 
 Docusaurus is a **static-site-generator** (also called **[Jamstack](https://jamstack.org/)**).
