@@ -46,15 +46,7 @@ convergência).
 
 **Swimlane**: é a representação gráfica de um participante.
 
-## Flowbuild e BPMN
+Apesar de utilizar o modelo proposto no BPMN, o Flowbuild busca se inspirar nesse modelo,
+mas contando com características que o tornam único.
 
-O Flowbuild executa processos descritos em BPMN?
-**Não**, o flowbuild é inspirado no BPMN, mas com algumas diferenças:
-1. Descreve os processos em formato JSON ao invés de XML.
-
-2. Implementa 7 tipos principais de elementos BPMN:
-    - Events: Start (1), Finish (2);
-    - Gateway: Flow (3);
-    - Task: SystemTask (4), UserTask (5), SubProcess (6) ;
-    - Lane (7);
-    - 
+A seguir, saberemos mais sobre como esses conceitos se aplicam ao Flowbuild.

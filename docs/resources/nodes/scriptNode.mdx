@@ -1,4 +1,9 @@
-# ScriptNode
+---
+id: scriptNode
+title: scriptNode
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 Nó de script é o nó capaz de executar um script.
 
@@ -20,7 +25,32 @@ O scriptNode espera 2 atributos
 
 Representa a função LISP de deverá ser executada.
 
-### Exemplo
+
+<Tabs
+  defaultValue="diagram"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'Example', value: 'example'},
+    {label: 'Symbol', value: 'diagram'},
+  ]
+}>
+<TabItem value="schema">
+
+```json
+{
+  "id": "any_string (system friendly recommended)",
+  "name": "any string",
+  "type": "ScriptTask",
+  "lane_id": "any_lane_id",
+  "next": "other_node_id"
+  "parameters":{
+     input:{},
+     script:{}
+  }
+}
+```
+</TabItem>
+<TabItem value="example">
 
 ```json
 {
@@ -71,3 +101,13 @@ Boolean(is_istantor_on); result;"
       }
    }
 ```
+
+</TabItem>
+<TabItem value="diagram">
+
+![script](../../../static/img/script.png)
+
+</TabItem>
+</Tabs>
+
+

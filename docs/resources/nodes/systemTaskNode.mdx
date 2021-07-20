@@ -1,3 +1,8 @@
+---
+id: systemTaskNode
+title: systemTaskNode
+---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -170,6 +175,100 @@ O nó de startProcess espera 3 parâmetros:
 }
 ```
 </TabItem>
-</Tabs>;
+</Tabs>
 
 
+## SCHEMAS
+
+<Tabs
+  defaultValue="diagram"
+  values={[
+    {label: 'HTTP', value: 'http'},
+    {label: 'Set To Bag', value: 'settobag'},
+    {label: 'Timer', value: 'timer'},
+    {label: 'Start Process', value: 'startprocess'},
+     {label: 'Symbol', value: 'diagram'},
+  ]
+}>
+<TabItem value="http">
+
+```json
+{
+  "id": "any_string (system friendly recommended)",
+  "name": "any string",
+  "next": "other_node_id",
+  "lane_id": "one_lane_id",
+  "type": "SystemTask",
+  "category": "http",
+  "parameters":  {
+    "input": {},
+    "request": {
+      "url": "url",
+      "verb": "GET,POST,PUT,PATCH,DELETE",
+      "headers": {}
+    }
+  },
+  "result_schema": {}
+}
+```
+</TabItem>
+<TabItem value="settobag">
+
+```json
+{
+  "id": "any_string (system friendly recommended)",
+  "name": "any string",
+  "next": "other_node_id",
+  "lane_id": "one_lane_id",
+  "type": "SystemTask",
+  "category": "setToBag",
+  "parameters": {
+    "input": {}
+  }
+}
+```
+</TabItem>
+<TabItem value="timer">
+
+```json
+
+{
+  "id": "any_string (system friendly recommended)",
+  "name": "any string",
+  "next": "other_node_id",
+  "lane_id": "one_lane_id",
+  "type": "SystemTask",
+  "category": "timer",
+  "parameters": {
+    "input": {},
+    "timeout": 60
+  }
+}
+  
+```
+</TabItem>
+<TabItem value="startprocess">
+
+``` json
+{
+    "id": "any_string (system friendly recommended)",
+    "type": "SystemTask",
+    "category": "startProcess",
+    "name": "any string",
+    "parameters": {
+        "workflow_name":"any string",
+        "input": {},
+        "actor_data": {$ref: "actor_data"},
+    },
+    "next": "other_node_id",
+    "lane_id":  "one_lane_id"
+}
+```
+</TabItem>
+
+<TabItem value="diagram">
+
+![system](../../../static/img/system.png)
+</TabItem>
+
+</Tabs>

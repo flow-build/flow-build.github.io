@@ -1,4 +1,11 @@
-# StartNode
+---
+id: startNode
+title: startNode
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 
 Representa o evento que marca o início de um processo.
 
@@ -39,7 +46,31 @@ Expirado esse prazo, o processo será finalizado com o status EXPIRED.
 
 > Se, no momento da expiração do processo, este estiver em status RUNNING, a expiração não ocorrerá.
 
-## Exemplo
+<Tabs
+  defaultValue="diagram"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'Example', value: 'example'},
+    {label: 'Symbol', value: 'diagram'},
+  ]
+}>
+<TabItem value="schema">
+
+```json
+{
+    "id": "string",
+    "name": "string",
+    "next": "string",
+    "type": "start",
+    "lane_id": "string",
+    "parameters": {
+        "input_schema": {},
+        "timeout": 100
+    }
+}
+```
+</TabItem>
+<TabItem value="example">
 
 ```json
 {
@@ -54,3 +85,12 @@ Expirado esse prazo, o processo será finalizado com o status EXPIRED.
     }
 }
 ```
+
+</TabItem>
+<TabItem value="diagram">
+
+![start](../../../static/img/start.png)
+
+</TabItem>
+</Tabs>
+

@@ -1,8 +1,4 @@
----
-sidebar_position: 1
----
-
-# TESTES
+# Testes
 
 Para rodar os testes, você pode usar o comando abaixo:
 

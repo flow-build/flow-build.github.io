@@ -2,40 +2,33 @@
 sidebar_position: 1
 ---
 
-# API
+# Processo
 
-Let's discover **Docusaurus in less than 5 minutes**.
+## Definição
 
-## funcao_tal()
+Antes de entrarmos diretamente em como o Flowbuild funciona, é necessário estar ciente 
+de alguns conceitos que regem seu funcionamento. E, um deles, é o processo. Um processo 
+é definido como um conjunto de atividades que precisam ser executadas em um determinado 
+fluxo para alcançar um objetivo pré-definido. 
 
-O que ela faz: xxxxxxx
+## Como um processo funciona?
 
-Argumentos:(arg1, arg2, arg3)
+Para que um processo atinja um resultado, são necessárias 'entradas', que podem vir em 
+forma de informação, dados,  resultado da interação do usuário com algum serviço etc. 
+Quando essas entradas são inseridas no processo, elas passam por controladores/serviços/atividades 
+que, após o recebimento e tratamento delas, irão resultar em um resultado parcial ou final desse 
+processo, conhecido também como 'saída'.
 
-Retorno: (retorno[Array])
+Outro detalhe importante do processo é sua estrutura. Uma estrutura mal definida pode gerar 
+confusão na hora de sua execução e pode também contar com entradas que talvez não façam sentido 
+para o escopo a qual o processo está atrelado. Uma estrutura bem definida, por outro lado, 
+facilita a forma que é exibida para os envolvidos, especialmente quando modelada utilizando o 
+BPMN - que será o próximo assunto -, além de poupar tempo e recursos em sua implantação e execução.
 
-Exemplo: ```código aqui```
+Em uma empresa, temos que levar em consideração um time composto por diversos profissionais, 
+sejam eles parte do time de desenvolvimento, parte do time de negócios ou qualquer outra que 
+seja sua atribuição. Pensando em uma forma que auxilie o entendimento do fluxo de um processo 
+para todas as partes envolvidas, o Flowbuild utiliza uma modelagem baseada em BPMN, utilizando 
+diagramas gráficos para ilustrar os processos.
 
-Or **try Docusaurus immediately** with **[new.docusaurus.io](https://new.docusaurus.io)**.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**:
-
-```shell
-npx @docusaurus/init@latest init my-website classic
-```
-
-## Start your site
-
-Run the development server:
-
-```shell
-cd my-website
-
-npx docusaurus start
-```
-
-Your site starts at `http://localhost:3000`.
-
-Open `docs/intro.md` and edit some lines: the site **reloads automatically** and display your changes.
+Veremos a seguir um pouco mais sobre esse conceito. 

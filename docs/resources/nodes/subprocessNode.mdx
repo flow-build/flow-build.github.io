@@ -1,4 +1,10 @@
-# SubProcessNode
+---
+id: subprocessNode
+title: subprocessNode
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 Representa um nó que permite iniciar outro processo **e** manter o processo principal aguardando sua execução.
 
@@ -40,7 +46,35 @@ De forma análoga ao nó http, esse campo é definido como uma lista de status a
 
 Assim como no caso do nó http, caso o subprocesso finalize em um status diferente do descrito como status válido, o processo-pai gera um estado de **ERROR**.
 
-## Exemplo
+
+
+<Tabs
+  defaultValue="diagram"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'Example', value: 'example'},
+    {label: 'Symbol', value: 'diagram'},
+  ]
+}>
+<TabItem value="schema">
+
+```json
+{
+  "id": "any_string (system friendly recommended)",
+  "name": "any string",
+  "type": "SubProcess",
+  "lane_id": "any_lane_id",
+  "next": "other_node_id"
+  "parameters":{
+     "workflow_name": "string",
+     "actor_data": {"$ref": "actor_data"},
+     "valid_response":{},
+     "input":{}
+  }
+}
+```
+</TabItem>
+<TabItem value="example">
 
 ```json
 {
@@ -59,3 +93,14 @@ Assim como no caso do nó http, caso o subprocesso finalize em um status diferen
     },
 }
 ```
+
+</TabItem>
+<TabItem value="diagram">
+
+![subprocess](../../../static/img/subprocess.png)
+
+</TabItem>
+</Tabs>
+
+
+

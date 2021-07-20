@@ -6,7 +6,7 @@ module.exports = {
   title: 'FlowBuild',
   tagline: 'Let\'s build some workflows',
   url: 'https://flow-build.github.io/#/',
-  baseUrl: '/flow-build.github.io/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
@@ -16,7 +16,7 @@ module.exports = {
     navbar: {
       title: 'Flowbuild',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Flowbuild',
         src: 'img/logo.svg',
       },
       items: [
@@ -40,7 +40,7 @@ module.exports = {
         },
         {
           type: 'doc',
-          docId: 'intro',
+          docId: 'tutorial/configuracao',
           position: 'left',
           label: 'Tutorial',
         },
@@ -68,13 +68,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://bitbucket.org/fdtedsd/workflow-api-doc/src/master/',
+            'https://github.com/flow-build/flow-build.github.io',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/flow-build/flow-build.github.io',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

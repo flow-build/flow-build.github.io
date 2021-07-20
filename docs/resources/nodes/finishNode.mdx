@@ -1,4 +1,12 @@
-# FinishNode
+---
+id: finishNode
+title: finishNode
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
 
 Representa o evento de termino do processo. 
 
@@ -20,7 +28,27 @@ Os parâmetros do finishNode transferem os dados para o campo result no estado f
 
 Caso o processo seja evocado como um subProcesso, os *result* do finishNode será transmitido para o processo-pai.
 
-## Exemplo
+<Tabs
+  defaultValue="diagram"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'Example', value: 'example'},
+    {label: 'Symbol', value: 'diagram'},
+  ]
+}>
+<TabItem value="schema">
+
+```json
+{
+  "id": "any_string (system friendly recommended)",
+  "name": "any string",
+  "type": "Finish",
+  "lane_id": "any_lane_id",
+  "next": null
+}
+```
+</TabItem>
+<TabItem value="example">
 
 ```json
 {
@@ -36,3 +64,14 @@ Caso o processo seja evocado como um subProcesso, os *result* do finishNode ser�
     }
 }
 ```
+
+</TabItem>
+<TabItem value="diagram">
+
+![finish](../../../static/img/finishnode.png)
+
+</TabItem>
+</Tabs>
+
+
+

@@ -1,4 +1,11 @@
-# FlowNode
+---
+id: flowNode
+title: flowNode
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 
 Nó de fluxo. 
 
@@ -25,7 +32,35 @@ Este objeto deve ser um conjunto de atributos que serão avaliados contra o valo
 
 É obrigatório que um dos atributos do objeto *next* do flowNode seja *default*, que será utilizado caso nenhum resultado seja identificado.
 
-## Exemplo
+<Tabs
+  defaultValue="diagram"
+  values={[
+    {label: 'Schema', value: 'schema'},
+    {label: 'Example', value: 'example'},
+    {label: 'Symbol', value: 'diagram'},
+  ]
+}>
+<TabItem value="schema">
+
+```json
+{
+  "id": "any_string ",
+  "name": "any string",
+  "next": {
+    "string": "other_node_id",
+    "default": "other_node_id"
+  },
+  "type": "flow",
+  "lane_id": "any_lane_id",
+  "parameters": {
+    "input": {
+      "key": "string"
+    }
+  }
+}
+```
+</TabItem>
+<TabItem value="example">
 
 ```json
 {
@@ -47,3 +82,13 @@ Este objeto deve ser um conjunto de atributos que serão avaliados contra o valo
    }
 }
 ```
+
+</TabItem>
+<TabItem value="diagram">
+
+![flow](../../../static/img/flow.png)
+
+</TabItem>
+</Tabs>
+
+
