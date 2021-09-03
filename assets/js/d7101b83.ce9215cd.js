@@ -1,0 +1,1 @@
+(self.webpackChunkworkflow=self.webpackChunkworkflow||[]).push([[452],{6353:function(l){"use strict";l.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Tutorial Intro","permalink":"/blog/intro"},{"title":"Welcome","permalink":"/blog/welcome"},{"title":"Hello","permalink":"/blog/hello-world"},{"title":"Hola","permalink":"/blog/hola"}]}')}}]);
